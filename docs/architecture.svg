@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 372" width="960" height="372" role="img" aria-labelledby="t d">
+  <title id="t">IoT Gateway Cloud Bridge (GDA) in the full edge-to-cloud system</title>
+  <desc id="d">This repo is the gateway (GDA, Java). Telemetry path: a Sense HAT emulator produces temperature, humidity, pressure and pitch readings; sensor and actuator managers poll them; the CDA DeviceDataManager publishes JSON over MQTT with TLS to a local broker on port 8883; the GDA DeviceDataManager receives it, checks the humidity rule (outside 30 to 50 percent for 10 seconds sends a humidifier command), and the CloudClientConnector publishes to Ubidots over MQTT with TLS. Command path goes back the other way: humidifier commands and the Ubidots LED switch travel from the GDA through the broker to the CDA, which drives the emulated actuators and LED matrix. The GDA also runs a Californium CoAP server; the CDA CoAP client was built and tested separately.</desc>
+  <style>
+    :root { --ink:#1f2937; --sub:#57606a; --line:#d0d7de; --card:#ffffff; --on:#0e7490; --tint:#ecfeff; --group:#f6f8fa; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink:#e6edf3; --sub:#9198a1; --line:#3d444d; --card:#161b22; --on:#22d3ee; --tint:#0b2a33; --group:#0d1117; }
+    }
+    text { font-family: Inter, "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; }
+    .gt    { font-size:12px; font-weight:700; fill:var(--sub); letter-spacing:.06em; }
+    .title { font-size:13.5px; font-weight:700; fill:var(--ink); text-anchor:middle; }
+    .sub   { font-size:10.5px; fill:var(--sub); text-anchor:middle; }
+    .lbl   { font-size:10.5px; fill:var(--sub); }
+    .pill-t{ font-size:10px; font-weight:700; fill:var(--on); text-anchor:middle; letter-spacing:.06em; }
+    .pill  { fill:var(--tint); stroke:var(--on); stroke-width:1.2; }
+    .node  { fill:var(--card); stroke:var(--line); stroke-width:1.5; }
+    .group { fill:var(--group); stroke:var(--line); stroke-width:1.5; stroke-dasharray:5 4; }
+    .mine  { fill:var(--group); stroke:var(--on); stroke-width:2; stroke-dasharray:5 4; }
+    .wire  { stroke:var(--line); stroke-width:1.5; fill:none; }
+    .cmd   { stroke:var(--sub); stroke-width:1.5; fill:none; stroke-dasharray:4 4; animation: dash 1.4s linear infinite; }
+    .flow  { stroke:var(--on); stroke-width:2; fill:none; stroke-dasharray:3 11; animation: dash 1.1s linear infinite; }
+    @keyframes dash { to { stroke-dashoffset:-14; } }
+    .head  { fill:var(--line); }
+    .headc { fill:var(--sub); }
+    .s0 { animation: s0 8s infinite; }
+    .s1 { animation: s1 8s infinite; }
+    .s2 { animation: s2 8s infinite; }
+    .s3 { animation: s3 8s infinite; }
+    .s4 { animation: s4 8s infinite; }
+    .s5 { animation: s5 8s infinite; }
+    .s6 { animation: s6 8s infinite; }
+    @keyframes s0 { 0.5%,13.3% { stroke:var(--on); fill:var(--tint); } 14.3%,100% { stroke:var(--line); fill:var(--card); } }
+    @keyframes s1 { 0%,14.3% { stroke:var(--line); fill:var(--card); } 14.8%,27.6% { stroke:var(--on); fill:var(--tint); } 28.6%,100% { stroke:var(--line); fill:var(--card); } }
+    @keyframes s2 { 0%,28.6% { stroke:var(--line); fill:var(--card); } 29.1%,41.9% { stroke:var(--on); fill:var(--tint); } 42.9%,100% { stroke:var(--line); fill:var(--card); } }
+    @keyframes s3 { 0%,42.9% { stroke:var(--line); fill:var(--card); } 43.4%,56.1% { stroke:var(--on); fill:var(--tint); } 57.1%,100% { stroke:var(--line); fill:var(--card); } }
+    @keyframes s4 { 0%,57.1% { stroke:var(--line); fill:var(--card); } 57.6%,70.4% { stroke:var(--on); fill:var(--tint); } 71.4%,100% { stroke:var(--line); fill:var(--card); } }
+    @keyframes s5 { 0%,71.4% { stroke:var(--line); fill:var(--card); } 71.9%,84.7% { stroke:var(--on); fill:var(--tint); } 85.7%,100% { stroke:var(--line); fill:var(--card); } }
+    @keyframes s6 { 0%,85.7% { stroke:var(--line); fill:var(--card); } 86.2%,99.0% { stroke:var(--on); fill:var(--tint); } 100% { stroke:var(--line); fill:var(--card); } }
+    @media (prefers-reduced-motion: reduce) { .flow, .cmd, .s0, .s1, .s2, .s3, .s4, .s5, .s6 { animation:none; } }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="head" d="M0 0 L10 5 L0 10z"/></marker>
+    <marker id="c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="headc" d="M0 0 L10 5 L0 10z"/></marker>
+  </defs>
+
+  <!-- groups -->
+  <rect class="group" x="20" y="24" width="290" height="282" rx="14"/>
+  <text class="gt" x="36" y="46">EDGE · CDA (PYTHON)</text>
+  <rect class="mine" x="480" y="24" width="300" height="282" rx="14"/>
+  <text class="gt" x="496" y="46">GATEWAY · GDA (JAVA)</text>
+  <rect class="pill" x="694" y="33" width="72" height="18" rx="9"/>
+  <text class="pill-t" x="730" y="46">THIS REPO</text>
+
+  <!-- telemetry wires: grey base + flowing accent -->
+  <g>
+    <path class="wire" d="M135 122 V140" marker-end="url(#a)"/>  <path class="flow" d="M135 122 V140"/>
+    <path class="wire" d="M135 204 V222" marker-end="url(#a)"/>  <path class="flow" d="M135 204 V222"/>
+    <path class="wire" d="M290 246 H336" marker-end="url(#a)"/>  <path class="flow" d="M290 246 H336"/>
+    <path class="wire" d="M460 246 H496" marker-end="url(#a)"/>  <path class="flow" d="M460 246 H496"/>
+    <path class="wire" d="M610 224 V206" marker-end="url(#a)"/>  <path class="flow" d="M610 224 V206"/>
+    <path class="wire" d="M760 162 H806" marker-end="url(#a)"/>  <path class="flow" d="M760 162 H806"/>
+  </g>
+  <!-- command wires: dashed grey, opposite direction -->
+  <g>
+    <path class="cmd" d="M195 140 V124" marker-end="url(#c)"/>
+    <path class="cmd" d="M195 222 V206" marker-end="url(#c)"/>
+    <path class="cmd" d="M338 272 H292" marker-end="url(#c)"/>
+    <path class="cmd" d="M498 272 H462" marker-end="url(#c)"/>
+    <path class="cmd" d="M660 206 V222" marker-end="url(#c)"/>
+    <path class="cmd" d="M808 190 H762" marker-end="url(#c)"/>
+  </g>
+
+  <!-- CDA cards -->
+  <rect class="node s0" x="40" y="60" width="250" height="62" rx="10"/>
+  <text class="title" x="165" y="83">Sense HAT emulator</text>
+  <text class="sub" x="165" y="100">temperature · humidity · pressure · pitch</text>
+  <text class="sub" x="165" y="114">joystick · 8×8 LED matrix</text>
+
+  <rect class="node s1" x="40" y="142" width="250" height="62" rx="10"/>
+  <text class="title" x="165" y="165">Sensor + actuator managers</text>
+  <text class="sub" x="165" y="182">APScheduler polling</text>
+  <text class="sub" x="165" y="196">humidifier · HVAC · LED tasks</text>
+
+  <rect class="node s2" x="40" y="224" width="250" height="62" rx="10"/>
+  <text class="title" x="165" y="247">DeviceDataManager</text>
+  <text class="sub" x="165" y="264">JSON out · runs incoming commands</text>
+  <text class="sub" x="165" y="278">joystick / tilt move the LED dot</text>
+
+  <!-- broker -->
+  <rect class="node s3" x="338" y="206" width="122" height="86" rx="10"/>
+  <text class="title" x="399" y="236">MQTT broker</text>
+  <text class="sub" x="399" y="254">local</text>
+  <text class="sub" x="399" y="270">TLS · port 8883</text>
+
+  <!-- GDA cards -->
+  <rect class="node" x="500" y="60" width="260" height="62" rx="10"/>
+  <text class="title" x="630" y="83">CoAP server (Californium)</text>
+  <text class="sub" x="630" y="100">telemetry · system-perf · actuator</text>
+  <text class="sub" x="630" y="114">resources (CoAP path, tested on its own)</text>
+
+  <rect class="node s5" x="500" y="142" width="260" height="62" rx="10"/>
+  <text class="title" x="630" y="165">CloudClientConnector</text>
+  <text class="sub" x="630" y="182">its own Paho MQTT client</text>
+  <text class="sub" x="630" y="196">TLS · listens for the LED switch</text>
+
+  <rect class="node s4" x="500" y="224" width="260" height="62" rx="10"/>
+  <text class="title" x="630" y="247">DeviceDataManager</text>
+  <text class="sub" x="630" y="264">humidity outside 30–50% for 10 s</text>
+  <text class="sub" x="630" y="278">→ humidifier command to the CDA</text>
+
+  <!-- cloud -->
+  <rect class="node s6" x="808" y="128" width="132" height="90" rx="12"/>
+  <text class="title" x="874" y="160">Ubidots cloud</text>
+  <text class="sub" x="874" y="178">MQTT · TLS 8883</text>
+  <text class="sub" x="874" y="194">dashboard</text>
+  <text class="sub" x="874" y="209">LED on/off switch</text>
+
+  <!-- legend -->
+  <path class="wire" d="M200 336 H232"/><path class="flow" d="M200 336 H232"/>
+  <text class="lbl" x="240" y="340">telemetry: sensor + CPU/memory data</text>
+  <path class="cmd" d="M520 336 H552" style="animation:none"/>
+  <text class="lbl" x="560" y="340">commands: humidifier on/off, cloud LED switch</text>
+  <text class="sub" x="480" y="362">Config and topics: config/PiotConfig.props in each repo. Both apps use the same data classes (SensorData, ActuatorData) as JSON.</text>
+</svg>
