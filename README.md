@@ -77,7 +77,7 @@ need a running MQTT broker, and some need the CDA or a Ubidots account.
 | ⚠️ | Hard to run on another machine | Certificate and credential paths in `config/PiotConfig.props` are absolute paths on my laptop, and no tests run in CI. |
 
 ## Technologies Used
-`Java` `MQTT` `CoAP` `TLS/SSL` `Docker` `Wireshark`
+`Java` `MQTT` `CoAP` `TLS/SSL` `Wireshark`
 
 ## Skills Demonstrated
 - Gateway device architecture and implementation
